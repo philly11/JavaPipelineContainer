@@ -1,0 +1,22 @@
+{
+  "name": "javapipeline",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/philly11/JavaPipelineContainer.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/philly11/JavaPipelineContainer/issues"
+  },
+  "homepage": "https://github.com/philly11/JavaPipelineContainer#readme",
+  "description": "",
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^22.20.3"
+  }
+}
