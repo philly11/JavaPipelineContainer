@@ -47,9 +47,6 @@ body {
     align-items: center;
 }  
 
-.login-input-field::placeholder {
-    color: gray;
-}
 
 .login-form-field {
     margin-bottom: 10px;
