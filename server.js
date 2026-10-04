@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const bcrypt = require('bcryptjs');
@@ -6,12 +7,16 @@ const { sql, getPool } = require('./db');
 const app = express();
 const port = process.env.PORT || 8888;
 
+
+
 // Serve HTML, CSS and JS from public/
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Parse JSON and form-encoded requests
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+
 
 // Create a new user account (username + password are hashed before storage).
 app.post('/register', async (req, res) => {
@@ -76,6 +81,7 @@ app.post('/login', async (req, res) => {
     return res.status(500).json({ success: false, message: 'Server error while logging in.' });
   }
 });
+
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);

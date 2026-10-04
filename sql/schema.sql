@@ -24,3 +24,5 @@ BEGIN
     );
 END
 GO
+
+SELECT * FROM JavaPipelineDB.dbo.Users;
