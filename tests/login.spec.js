@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Login page', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/website.html');
+    await page.goto('/');
   });
 
   test('shows the login form', async ({ page }) => {
@@ -14,19 +14,17 @@ test.describe('Login page', () => {
   });
 
   test('logs in with valid credentials', async ({ page }) => {
-    // The app shows an alert on success; capture and accept it.
-    let alertMessage = '';
-    page.on('dialog', async (dialog) => {
-      alertMessage = dialog.message();
-      await dialog.accept();
+    await page.getByPlaceholder('Username').fill('testuser');
+    await page.getByPlaceholder('Password').fill('Test1234!');
+
+    const [dialog] = await Promise.all([
+      page.waitForEvent('dialog'),
+      page.getByRole('button', { name: 'Login' }).click(),
+    ]);
+
+    expect(dialog.message()).toBe('You have successfully logged in.');
+    await dialog.accept();
     });
-
-    await page.getByPlaceholder('Username').fill('user');
-    await page.getByPlaceholder('Password').fill('password');
-    await page.getByRole('button', { name: 'Login' }).click();
-
-    expect(alertMessage).toBe('You have successfully logged in.');
-  });
 
   test('shows an error with invalid credentials', async ({ page }) => {
     await page.getByPlaceholder('Username').fill('wrong');
