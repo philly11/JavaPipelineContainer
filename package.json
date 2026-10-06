@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test:report": "playwright test && node report-results.js"
   },
   "repository": {
     "type": "git",

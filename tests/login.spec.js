@@ -9,7 +9,8 @@ test.describe('Login page', () => {
   test('shows the login form', async ({ page }) => {
     await expect(page.getByRole('heading', { name: 'Login' })).toBeVisible();
     await expect(page.getByPlaceholder('Username')).toBeVisible();
-    await expect(page.getByPlaceholder('Password')).toBeVisible();
+    //await expect(page.getByPlaceholder('Password')).toBeVisible();
+    await page.getByPlaceholder('Password').fill('WrongPasswordOnPurpose');
     await expect(page.getByRole('button', { name: 'Login' })).toBeVisible();
   });
 
