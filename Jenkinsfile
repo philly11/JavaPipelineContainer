@@ -6,7 +6,7 @@ pipeline {
         DB_SERVER = 'localhost'
         DB_DATABASE = 'JavaPipelineDB'
         DB_USER = 'app_user'
-        DB_PASSWORD = credentials('db_password') // Use Jenkins credentials for sensitive data
+        DB_PASSWORD = credentials('db-password') // Use Jenkins credentials for sensitive data
         DB_PORT = '1433'
         DB_ENCRYPT = 'false'
         DB_TRUST_SERVER_CERTIFICATE = 'true'
