@@ -42,7 +42,7 @@ pipeline {
         }
     
 
-    post {
+    stage {
         always {
             archiveArtifacts artifacts: 'playwright-report/**', allowEmptyArchive: true
         }
