@@ -40,12 +40,12 @@ pipeline {
                 bat 'node report-results.js'
             }
         }
-    
+    }
 
-    stage {
+    post {
         always {
             archiveArtifacts artifacts: 'playwright-report/**', allowEmptyArchive: true
         }
     }
 }
-}
+
