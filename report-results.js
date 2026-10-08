@@ -18,6 +18,12 @@ function collectSpecs(suites, acc = []) {
 }
 
 async function main() {
+
+    if (!fs.existsSync(RESULTS_FILE)) {
+        console.error(`Results file not found: ${RESULTS_FILE}`);
+        process.exit(1);
+    }
+    
     const raw = fs.readFileSync(RESULTS_FILE, 'utf-8');
     const report = JSON.parse(raw);
 

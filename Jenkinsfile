@@ -26,12 +26,21 @@ pipeline {
             }
         }
 
-        stage('Run tests and report') {
+        stage('Run tests') {
             steps {
-                bat 'npm run test:report'
+                //tests fail, build is marked as unstable
+                catchError(buildResult: 'UNSTABLE', stageResult: 'Failure') {
+                    bat 'npx playwright test'
+                }
             }
         }
-    }
+
+        stage('Generate Test Report') {
+            steps {
+                bat 'node report-results.js'
+            }
+        }
+    
 
     post {
         always {
@@ -39,3 +48,4 @@ pipeline {
         }
     }
 }
+
