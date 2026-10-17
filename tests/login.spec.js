@@ -15,6 +15,8 @@ test.describe('Login page', () => {
   });
 
   test('logs in with valid credentials', async ({ page }) => {
+    test.skip(!!process.env.SKIP_DB_TESTS, 'Needs SQL Server, which is off in this environment');
+
     await page.getByPlaceholder('Username').fill('testuser');
     await page.getByPlaceholder('Password').fill('Test1234!');
 
