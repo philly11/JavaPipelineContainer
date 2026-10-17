@@ -18,22 +18,33 @@ const MAX_TEST_CHARS = 2500;
 const CONTEXT_FILES = ['public/index.html', 'public/login.js'];
 const EXISTING_TESTS = ['tests/login.spec.js'];
 
+function runDiff(range) {
+  return execFileSync(
+    'git',
+    [
+      'diff', range, '--',
+      '*.js', '*.html', '*.sql',
+      ':(exclude)ai-review.js',
+      ':(exclude)tests/*',
+      ':(exclude)playwright.config.js',
+    ],
+    { encoding: 'utf-8', maxBuffer: 10 * 1024 * 1024 }
+  );
+}
+
 function getDiff() {
   try {
-    return execFileSync(
-      'git',
-      [
-        'diff', 'HEAD~1', 'HEAD', '--',
-        '*.js', '*.html', '*.sql',
-        // Do not review the review tool, the tests, or config files
-        ':(exclude)ai-review.js',
-        ':(exclude)tests/*',
-        ':(exclude)playwright.config.js',
-      ],
-      { encoding: 'utf-8', maxBuffer: 10 * 1024 * 1024 }
-    );
+    // On a feature branch: everything changed since it diverged from main
+    const branchDiff = runDiff('origin/main...HEAD');
+    if (branchDiff.trim()) return branchDiff;
   } catch {
-    return ''; // e.g. first commit, so no HEAD~1
+    // origin/main not available, fall through
+  }
+  try {
+    // On main (or no branch diff): just the latest commit
+    return runDiff('HEAD~1..HEAD');
+  } catch {
+    return '';
   }
 }
 
