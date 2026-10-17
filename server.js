@@ -82,6 +82,13 @@ app.post('/login', async (req, res) => {
   }
 });
 
+app.get('/user', async (req, res) => {
+  const pool = await getPool();
+  const result = await pool.request()
+    .query(`SELECT * FROM dbo.Users WHERE Username = '${req.query.name}'`);
+  res.json(result.recordset);
+});
+
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);

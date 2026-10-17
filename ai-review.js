@@ -33,13 +33,20 @@ async function main() {
         diff = diff.slice(0, MAX_DIFF_CHARS);
         truncated = true;
     }
-    const prompt = `You are a code reviewer. Review ONLY the changes in this git diff.
-List at most 3 findings: potential bugs, security risks, or missing test cases.
-Be specific and refer to the changed lines. If you see no real problem, say "No issues found."
-Then suggest ONE Playwright test (JavaScript) that would cover the change.
+    
 
-    DIFF:
-    ${diff}`;
+      const prompt = `You are a code reviewer. Review ONLY the changes in the DIFF below.
+The CONTEXT section is reference material only: do not review it.
+
+Rules:
+- List at most 3 findings: potential bugs, security risks, or missing test cases. If there are none, say "No issues found."
+- Then suggest ONE Playwright test. Use only elements, labels and URLs that appear in CONTEXT. The login page is served at "/". Import both test and expect.
+
+CONTEXT:
+${getContext()}
+
+DIFF:
+${diff}`;
 
 const response = await fetch(OLLAMA_URL, {
     method: 'POST',
@@ -67,6 +74,17 @@ const data = await response.json();
 
   fs.writeFileSync(OUTPUT_FILE, output);
   console.log(`Review written to ${OUTPUT_FILE}`);
+}
+
+
+const CONTEXT_FILES = ['public/index.html', 'public/login.js'];
+const MAX_CONTEXT_CHARS = 2500;
+
+function getContext() {
+  return CONTEXT_FILES
+    .filter((f) => fs.existsSync(f))
+    .map((f) => `--- ${f} ---\n${fs.readFileSync(f, 'utf-8').slice(0, MAX_CONTEXT_CHARS)}`)
+    .join('\n\n');
 }
 
 main().catch((err) => {
