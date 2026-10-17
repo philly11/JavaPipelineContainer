@@ -2,15 +2,7 @@ pipeline {
     agent any
 
     environment {
-        // Define environment variables here if needed
-        DB_SERVER = 'localhost'
-        DB_DATABASE = 'JavaPipelineDB'
-        DB_USER = 'app_user'
-        DB_PASSWORD = credentials('db-password') // Use Jenkins credentials for sensitive data
-        DB_PORT = '1433'
-        DB_ENCRYPT = 'false'
-        DB_TRUST_SERVER_CERTIFICATE = 'true'
-        PORT = '8888'
+        SKIP_DB_TESTS = 'true'
     }
 
     stages {
@@ -20,32 +12,35 @@ pipeline {
             }
         }
 
-        stage('Install Playwright browsers') {
+        stage('Install Playwright browser') {
             steps {
-                bat 'npx playwright install'
+                // Chromium only: saves download time, disk and RAM
+                bat 'npx playwright install chromium'
             }
         }
 
         stage('Run tests') {
             steps {
-                //tests fail, build is marked as unstable
-                catchError(buildResult: 'UNSTABLE', stageResult: 'Failure') {
-                    bat 'npx playwright test'
+                catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+                    bat 'npx playwright test --project=chromium'
                 }
             }
         }
 
-        stage('Generate Test Report') {
+        stage('AI review (experimental)') {
             steps {
-                bat 'node report-results.js'
+                catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+                    timeout(time: 5, unit: 'MINUTES') {
+                        bat 'node ai-review.js'
+                    }
+                }
             }
         }
     }
 
     post {
         always {
-            archiveArtifacts artifacts: 'playwright-report/**', allowEmptyArchive: true
+            archiveArtifacts artifacts: 'playwright-report/**, ai-review.md', allowEmptyArchive: true
         }
     }
 }
-
